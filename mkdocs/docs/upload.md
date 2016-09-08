@@ -2,18 +2,21 @@
 
 ## Installation
 ```bash
-npm install @lively-video/upload --save
+npm install @livelyvideo/upload --save
 ```
 
 ## Usage
+
+> Latest Version: v0.0.15
+
 ```javascript
 // With UI
-import Upload from '@lively-video/upload';
-const upload = new Upload(element, options);
+import LivelyUpload from '@livelyvideo/upload';
+const upload = new LivelyUpload(element, options);
 
 // Without UI
-import UploadCore from '@lively-video/upload/core';
-const uploadCore = new UploadCore(element, options);
+import LivelyUploadCore from '@livelyvideo/upload/dist/core';
+const uploadCore = new LivelyUploadCore(element, options);
 ```
 
 ## Configuration
@@ -21,10 +24,10 @@ You can customize your Lively Upload by passing an options object when instantia
 
 Example config:
 ```javascript
-import Upload from '@lively-video/upload';
+import LivelyUpload from '@livelyvideo/upload';
 
-// new Upload(targetElement, options);
-const myUpload = new Upload('#upload', {
+// new LivelyUpload(targetElement, options);
+const myUpload = new LivelyUpload('#upload', {
 	url: '/my-upload-route'
 });
 ```
@@ -61,9 +64,9 @@ The Upload library triggers events when processing files, which you can register
 
 Example listener:
 ```javascript
-import Upload from '@livelyvideo/upload';
+import LivelyUpload from '@livelyvideo/upload';
 
-const myUpload = new Upload(element, {
+const myUpload = new LivelyUpload(element, {
 	url: '/my-upload-route'
 });
 

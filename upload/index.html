@@ -127,26 +127,29 @@
 
 <h1 id="lively-upload">Lively Upload</h1>
 <h2 id="installation">Installation</h2>
-<pre><code class="bash">npm install @lively-video/upload --save
+<pre><code class="bash">npm install @livelyvideo/upload --save
 </code></pre>
 
 <h2 id="usage">Usage</h2>
+<blockquote>
+<p>Latest Version: v0.0.15</p>
+</blockquote>
 <pre><code class="javascript">// With UI
-import Upload from '@lively-video/upload';
-const upload = new Upload(element, options);
+import LivelyUpload from '@livelyvideo/upload';
+const upload = new LivelyUpload(element, options);
 
 // Without UI
-import UploadCore from '@lively-video/upload/core';
-const uploadCore = new UploadCore(element, options);
+import LivelyUploadCore from '@livelyvideo/upload/dist/core';
+const uploadCore = new LivelyUploadCore(element, options);
 </code></pre>
 
 <h2 id="configuration">Configuration</h2>
 <p>You can customize your Lively Upload by passing an options object when instantiating the library.</p>
 <p>Example config:</p>
-<pre><code class="javascript">import Upload from '@lively-video/upload';
+<pre><code class="javascript">import LivelyUpload from '@livelyvideo/upload';
 
-// new Upload(targetElement, options);
-const myUpload = new Upload('#upload', {
+// new LivelyUpload(targetElement, options);
+const myUpload = new LivelyUpload('#upload', {
     url: '/my-upload-route'
 });
 </code></pre>
@@ -245,9 +248,9 @@ const myUpload = new Upload('#upload', {
 <h2 id="events">Events</h2>
 <p>The Upload library triggers events when processing files, which you can register to by listening to your instance.</p>
 <p>Example listener:</p>
-<pre><code class="javascript">import Upload from '@livelyvideo/upload';
+<pre><code class="javascript">import LivelyUpload from '@livelyvideo/upload';
 
-const myUpload = new Upload(element, {
+const myUpload = new LivelyUpload(element, {
     url: '/my-upload-route'
 });
 
