@@ -132,8 +132,9 @@
 
 <h2 id="usage">Usage</h2>
 <blockquote>
-<p>Latest Version: v0.0.15</p>
+<p>Latest Version: v0.1.0</p>
 </blockquote>
+<p>NPM</p>
 <pre><code class="javascript">// With UI
 import LivelyUpload from '@livelyvideo/upload';
 const upload = new LivelyUpload(element, options);
@@ -143,14 +144,27 @@ import LivelyUploadCore from '@livelyvideo/upload/dist/core';
 const uploadCore = new LivelyUploadCore(element, options);
 </code></pre>
 
+<p>Script</p>
+<pre><code class="html">&lt;script type='text/javascript' src='/upload/dist/index.min.js'&gt;&lt;/script&gt;
+</code></pre>
+
+<pre><code class="javascript">const upload = new LivelyUpload(document.querySelector('#upload'), {
+    url: 'beta.livelyvideo.tv/api/upload',
+    authUrl: 'beta.livelyvideo.tv/auth/v1/lively'
+});
+</code></pre>
+
+<p>Styles</p>
+<pre><code class="html">&lt;link rel='stylesheet' type='text/css' href='/upload/dist/upload.min.css' /&gt;
+</code></pre>
+
 <h2 id="configuration">Configuration</h2>
 <p>You can customize your Lively Upload by passing an options object when instantiating the library.</p>
 <p>Example config:</p>
-<pre><code class="javascript">import LivelyUpload from '@livelyvideo/upload';
-
-// new LivelyUpload(targetElement, options);
-const myUpload = new LivelyUpload('#upload', {
-    url: '/my-upload-route'
+<pre><code class="javascript">// new LivelyUpload(targetElement, options);
+const upload = new LivelyUpload('#upload', {
+    url: 'beta.livelyvideo.tv/api/upload',
+    authUrl: 'beta.livelyvideo.tv/auth/v1/lively'
 });
 </code></pre>
 
@@ -189,6 +203,11 @@ const myUpload = new LivelyUpload('#upload', {
 <td>Defaults to null. The redirect route to your results template for cross-origin form compatibility.</td>
 </tr>
 <tr>
+<td>accept</td>
+<td>(string)</td>
+<td>Defaults to null. Sets the value of accept attribute on file input.</td>
+</tr>
+<tr>
 <td>supportLegacy</td>
 <td>(bool)</td>
 <td>Defaults to true. Turn legacy support on or off.</td>
@@ -202,11 +221,6 @@ const myUpload = new LivelyUpload('#upload', {
 <td>autoSubmit</td>
 <td>(bool)</td>
 <td>Defaults to true. Automatically upload file when added to the uploader.</td>
-</tr>
-<tr>
-<td>https</td>
-<td>(bool)</td>
-<td>Defaults to false. Set protocol.</td>
 </tr>
 <tr>
 <td>MESSAGES</td>
@@ -229,19 +243,14 @@ const myUpload = new LivelyUpload('#upload', {
 </thead>
 <tbody>
 <tr>
-<td>clickable</td>
+<td>pause</td>
 <td>(bool)</td>
-<td>Defaults to true. UploadForm element opens file select on click.</td>
+<td>Defaults to true. Enables pause button.</td>
 </tr>
 <tr>
-<td>title</td>
-<td>(string)</td>
-<td>Title text</td>
-</tr>
-<tr>
-<td>subtitle</td>
-<td>(string)</td>
-<td>Subtitle text</td>
+<td>cancel</td>
+<td>(bool)</td>
+<td>Defaults to true. Enables cancel button.</td>
 </tr>
 </tbody>
 </table>
@@ -251,7 +260,8 @@ const myUpload = new LivelyUpload('#upload', {
 <pre><code class="javascript">import LivelyUpload from '@livelyvideo/upload';
 
 const myUpload = new LivelyUpload(element, {
-    url: '/my-upload-route'
+    url: 'beta.livelyvideo.tv/api/upload',
+    authUrl: 'beta.livelyvideo.tv/auth/v1/lively'
 });
 
 // myUpload.on(eventName, callbackFunction);
@@ -285,6 +295,16 @@ myUpload.on('start', () =&gt; {
 <td>failure</td>
 <td>(file, reason)</td>
 <td>Called after upload failure.</td>
+</tr>
+<tr>
+<td>addedfile</td>
+<td>(file)</td>
+<td>Called when file has been added to input.</td>
+</tr>
+<tr>
+<td>config</td>
+<td>(data)</td>
+<td>Called on instatiation. Data object contains maxFileSize</td>
 </tr>
 <tr>
 <td>progress</td>
