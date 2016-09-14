@@ -112,6 +112,8 @@
         
             <li><a href="#end-points">End-points</a></li>
         
+            <li><a href="#server-response">Server Response</a></li>
+        
             <li><a href="#example-curl-requests">Example CURL Requests</a></li>
         
     
@@ -135,10 +137,21 @@ the upload is allowed to proceed.</p>
 <li>Depending on your preference, this service can be made available as an 
 installable tarfile, a npm package downloaded from LivelyVideo's repo, 
 or a Docker container available from <strong>TBD</strong> repo.</li>
+</ul>
+<h4 id="install-via-npm">Install via NPM</h4>
+<ul>
 <li>If you are using the npm package, you will need to ensure that you are able
 to connect to and use our repository: it is at <code>https://npm.livelyvideo.tv</code>.
 You will need authentication credentials or a token along with other settings
 that should be in the welcome email that you might have received earlier.</li>
+<li>Download the service: <code>npm install -g @livelyvideo/svcUpload</code>. If you are 
+unable to install the module globally, you might need to follow different 
+steps to run it locally.</li>
+<li>Create the configuration file as defined in the <code>Configuration</code> section
+below.</li>
+<li>Run the service as <code>LIVELY_CFG=your_config_file.yaml svcUpload</code>.</li>
+<li>To use with a Node process manager such as <code>PM2</code> the following should work 
+<code>pm2 start LIVELY_CFG=your_cfg_file.yaml svcUpload</code>.</li>
 <li>To download the project's dependencies, you will want to perform 
 <code>npm install</code> in the project's working directory. To run unit tests, type
 <code>npm test</code>.</li>
@@ -146,18 +159,19 @@ that should be in the welcome email that you might have received earlier.</li>
 <h3 id="dependencies">Dependencies</h3>
 <p>The service depends on a few Lively Video modules specified in the 
 <code>package.json</code> file, which are published on https://npm.livelyvideo.tv. 
-These include <code>@lively-video/config</code> and <code>@lively-video/db-mysql</code>.</p>
+These include <code>@livelyvideo/config</code> and <code>@livelyvideo/db-mysql</code>.</p>
 <h3 id="configuration">Configuration</h3>
 <p>The application supports configuration specification by way of a YAML file
-(default <code>cfg.yaml</code>) with individual settings overridden by environment
+(default <code>cfg.yaml</code> in the local directory, or overridden by setting the 
+environment var <code>LIVELY_CFG</code>) with individual settings overridden by environment
 variables if desired. The settings and the corresponding override environment
 variables in alphabetical order are as follows:</p>
 <ul>
 <li><code>authEndpoint</code> (env var <code>AUTH_EP</code>): if defined, this allows the service to 
 perform a GET on the specified url as follows: 
-<code>{authEndPoint}/token/{BearerToken}</code>; expected response must be in JSON and 
-should contain a <code>token</code> field. If not defined, reverts to expecting a 
-hard-coded value in the request bearer token.</li>
+<code>{authEndPoint}/{BearerToken}</code>; expected response must be in JSON and should
+contain a <code>token</code> and a <code>userId</code> field. If not defined, all calls to the service
+will fail with <code>500/Internal Error</code> with the log hinting at this omission.</li>
 <li><code>container</code> (env var <code>CONTAINER</code>): if defined, application assumes that it is
 running in a container. If the value of this variable is <code>LC</code>, it assumes that
 it is running as a container on localhost, which means that it has full access
@@ -194,7 +208,9 @@ is <code>gif jpg mp4 mpeg png</code>. </li>
 <li>Ensure that you have a local instance of MariaDB or MySQL installed with a 
 user <code>root</code> with no password (or define the above environment variables to 
 match your configuration).</li>
-<li>Run the scripts in <code>db</code> directory on your DB instance (TODO: DB migration tool).</li>
+<li>Run the scripts in the <code>config/dbscripts</code> directory on your DB instance in the
+implied chronological order. For example, <code>mysql -u &lt;username&gt; -p &lt; config/
+dbscripts/db_20160714_svcupload_1.sql</code>.</li>
 <li>To use the mock authorization API embedded in this server, set the environment
 variable <code>FAKE_AUTH_ENABLE</code> to 1. This service accepts almost any bearer token
 sent to it and returns a valid response with a fixed <code>userID</code>. However, a bearer
@@ -207,6 +223,12 @@ to help you test the failed authentication case.</li>
 <li>Server configuration: GET <code>/api/upload/config</code></li>
 <li>Chunked: POST <code>/api/upload</code></li>
 <li>Multi-part: POST <code>/api/upload/multipart</code></li>
+</ul>
+<h2 id="server-response">Server Response</h2>
+<ul>
+<li>For successful requests, the service will return HTTP status code 200.</li>
+<li>When an upload completes successfully, the service will include a response header
+<code>X-File-Retrieve-URL</code> that will contain a URL to be used to get the uploaded file.</li>
 </ul>
 <h2 id="example-curl-requests">Example CURL Requests</h2>
 <h3 id="chunked">Chunked</h3>

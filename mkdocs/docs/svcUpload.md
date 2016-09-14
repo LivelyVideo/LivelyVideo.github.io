@@ -16,10 +16,20 @@ the upload is allowed to proceed.
 * Depending on your preference, this service can be made available as an 
 installable tarfile, a npm package downloaded from LivelyVideo's repo, 
 or a Docker container available from **TBD** repo.
+
+#### Install via NPM
 * If you are using the npm package, you will need to ensure that you are able
 to connect to and use our repository: it is at `https://npm.livelyvideo.tv`.
 You will need authentication credentials or a token along with other settings
 that should be in the welcome email that you might have received earlier.
+* Download the service: `npm install -g @livelyvideo/svcUpload`. If you are 
+unable to install the module globally, you might need to follow different 
+steps to run it locally.
+* Create the configuration file as defined in the `Configuration` section
+below.
+* Run the service as `LIVELY_CFG=your_config_file.yaml svcUpload`.
+* To use with a Node process manager such as `PM2` the following should work 
+`pm2 start LIVELY_CFG=your_cfg_file.yaml svcUpload`.
 * To download the project's dependencies, you will want to perform 
 `npm install` in the project's working directory. To run unit tests, type
 `npm test`.
@@ -27,19 +37,20 @@ that should be in the welcome email that you might have received earlier.
 ### Dependencies
 The service depends on a few Lively Video modules specified in the 
 `package.json` file, which are published on https://npm.livelyvideo.tv. 
-These include `@lively-video/config` and `@lively-video/db-mysql`.
+These include `@livelyvideo/config` and `@livelyvideo/db-mysql`.
 
 ### Configuration 
 The application supports configuration specification by way of a YAML file
-(default `cfg.yaml`) with individual settings overridden by environment
+(default `cfg.yaml` in the local directory, or overridden by setting the 
+environment var `LIVELY_CFG`) with individual settings overridden by environment
 variables if desired. The settings and the corresponding override environment
 variables in alphabetical order are as follows:
  
 * `authEndpoint` (env var `AUTH_EP`): if defined, this allows the service to 
 perform a GET on the specified url as follows: 
-`{authEndPoint}/token/{BearerToken}`; expected response must be in JSON and 
-should contain a `token` field. If not defined, reverts to expecting a 
-hard-coded value in the request bearer token.
+`{authEndPoint}/{BearerToken}`; expected response must be in JSON and should
+contain a `token` and a `userId` field. If not defined, all calls to the service
+will fail with `500/Internal Error` with the log hinting at this omission.
 * `container` (env var `CONTAINER`): if defined, application assumes that it is
 running in a container. If the value of this variable is `LC`, it assumes that
 it is running as a container on localhost, which means that it has full access
@@ -75,7 +86,9 @@ is `gif jpg mp4 mpeg png`.
 * Ensure that you have a local instance of MariaDB or MySQL installed with a 
 user `root` with no password (or define the above environment variables to 
 match your configuration).
-* Run the scripts in `db` directory on your DB instance (TODO: DB migration tool).
+* Run the scripts in the `config/dbscripts` directory on your DB instance in the
+implied chronological order. For example, `mysql -u <username> -p < config/
+dbscripts/db_20160714_svcupload_1.sql`.
 * To use the mock authorization API embedded in this server, set the environment
 variable `FAKE_AUTH_ENABLE` to 1. This service accepts almost any bearer token
 sent to it and returns a valid response with a fixed `userID`. However, a bearer
@@ -88,6 +101,11 @@ to help you test the failed authentication case.
 * Chunked: POST `/api/upload`
 * Multi-part: POST `/api/upload/multipart`
 
+## Server Response
+* For successful requests, the service will return HTTP status code 200.
+* When an upload completes successfully, the service will include a response header
+`X-File-Retrieve-URL` that will contain a URL to be used to get the uploaded file.
+
 ## Example CURL Requests
 
 ### Chunked
@@ -97,3 +115,4 @@ to help you test the failed authentication case.
 
 ### Multi-part
 * Request: `curl -ikL -XPOST -H 'Authorization: Bearer xxx' -H 'Content-Type: multipart/form-data' http://localhost:3000/api/upload/multipart -F "files=something2-mp.mp4" -F "fileBegin=@/tmp/something2"`
+
